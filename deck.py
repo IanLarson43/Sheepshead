@@ -11,4 +11,4 @@ class Deck:
     def draw_card(self):
         card = self.cards[-1]
         self.cards.pop(-1)
-        return card.name
+        return card

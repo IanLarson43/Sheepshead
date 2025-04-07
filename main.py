@@ -4,6 +4,7 @@ import constants
 from deck import Deck
 from player import Player
 from bot import Bot
+from trick import Trick
 
 deck = Deck()
 
@@ -37,25 +38,27 @@ blind.append(deck.draw_card)
 for hand in range(constants.BASE_HAND_SIZE):
     print("\nYou Have:")
     for card_number in range(len(p1.hand)):
-        print(f"{card_number + 1}: {p1.hand[card_number]}")
+        print(f"{card_number + 1}: {p1.hand[card_number].name}")
     print("\nWhat card do you want to play?")
 
     card_played = False
     while not card_played:
         try:
             selected_card = p1.hand[int(input()) - 1]
-            print(f"You played {selected_card}")
-            p1.play_card(selected_card)
+            print(f"You played {selected_card.name}")
+            trick = Trick(p1.play_card(selected_card))
             card_played = True
         except (ValueError, IndexError):
             print("Invalid Selection. Please try again")
 
     time.sleep(constants.TEXT_DELAY)
-    print(f"Player 2 played {p2.play_card(p2_bot.choose_card(p2.hand))}")
+    print(f"Player 2 played {trick.add_card(p2.play_card(p2_bot.choose_card(p2.hand))).name}")
     time.sleep(constants.TEXT_DELAY)
-    print(f"Player 3 played {p3.play_card(p3_bot.choose_card(p3.hand))}")
+    print(f"Player 3 played {trick.add_card(p3.play_card(p3_bot.choose_card(p3.hand))).name}")
     time.sleep(constants.TEXT_DELAY)
-    print(f"Player 4 played {p4.play_card(p4_bot.choose_card(p4.hand))}")
+    print(f"Player 4 played {trick.add_card(p4.play_card(p4_bot.choose_card(p4.hand))).name}")
     time.sleep(constants.TEXT_DELAY)
-    print(f"Player 5 played {p5.play_card(p5_bot.choose_card(p5.hand))}")
+    print(f"Player 5 played {trick.add_card(p5.play_card(p5_bot.choose_card(p5.hand))).name}")
     time.sleep(constants.TEXT_DELAY)
+
+    print(trick.evaluate_winner().name)
