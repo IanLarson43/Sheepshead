@@ -2,6 +2,8 @@ PLAYER_COUNT = 5
 
 BASE_HAND_SIZE = 6
 
+TEXT_DELAY = 0.5
+
 RANK_POINTS = {
     "7": 0, "8": 0, "9": 0,
     "King": 4,
