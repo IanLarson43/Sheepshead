@@ -2,11 +2,12 @@ import constants
 from card import Card
 
 class Trick:
-    def __init__(self, card: Card):
-        self.lead_card = card
-        self.cards = [card]
+    def __init__(self):
+        self.cards = []
 
     def add_card(self, card: Card):
+        if self.cards == []:
+            self.lead_card = card
         self.cards.append(card)
         return card
     
