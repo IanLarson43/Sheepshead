@@ -1,3 +1,4 @@
+import constants
 from card import Card
 from trick import Trick
 from bot import Bot
@@ -40,3 +41,12 @@ class Player():
         self.remove_card(selected_card)
 
         print(f"Player {self.player_number} played {selected_card.name}")
+    
+    def add_trick(self, trick: Trick):
+        trick_points = 0
+        for card in trick.cards:
+            trick_points += constants.RANK_POINTS.get(card.rank)
+        
+        self.points += trick_points
+
+        return trick_points

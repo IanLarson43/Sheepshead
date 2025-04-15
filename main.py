@@ -5,38 +5,48 @@ from deck import Deck
 from player import Player
 from trick import Trick
 
-deck = Deck()
-
 players = [Player(1, False)] + ([Player(_ + 2, True) for _ in range(constants.PLAYER_COUNT - 1)])
 
-p1 = players[0]
-p2 = players[1]
-p3 = players[2]
-p4 = players[3]
-p5 = players[4]
+while True:
+    deck = Deck()
+    blind = []
+    round_players = players
 
-blind = []
+    for p in range(constants.PLAYER_COUNT):
+        for c in range(constants.BASE_HAND_SIZE):
+            players[p].add_card(deck.draw_card())
 
-for p in range(constants.PLAYER_COUNT):
-    for c in range(constants.BASE_HAND_SIZE):
-        players[p].add_card(deck.draw_card())
-        # print(f"Player {p+1} drew {players[p].hand[c]}")
+    blind.append(deck.draw_card)
+    blind.append(deck.draw_card)
 
-blind.append(deck.draw_card)
-blind.append(deck.draw_card)
+    for hand in range(constants.BASE_HAND_SIZE):
+        trick = Trick()
 
-for hand in range(constants.BASE_HAND_SIZE):
-    trick = Trick()
+        time.sleep(constants.TEXT_DELAY)
+        round_players[0].play_card(trick)
+        time.sleep(constants.TEXT_DELAY)
+        round_players[1].play_card(trick)
+        time.sleep(constants.TEXT_DELAY)
+        round_players[2].play_card(trick)    
+        time.sleep(constants.TEXT_DELAY)
+        round_players[3].play_card(trick)
+        time.sleep(constants.TEXT_DELAY)
+        round_players[4].play_card(trick)
+        time.sleep(constants.TEXT_DELAY)
 
-    p1.play_card(trick)
+        winning_card = trick.evaluate_winner()
+        winner_index = trick.cards.index(winning_card)
+        winner = round_players[winner_index]
+        round_players[winner_index].add_trick(trick)
+
+        print(f"\nWinner is Player {winner.player_number}\n")
+
+        round_players[:] = round_players[winner_index:] + round_players[:winner_index]
+
+    for p in range(constants.PLAYER_COUNT):
+        print(f"Player {players[p].player_number} had {players[p].points} points")
+        time.sleep(constants.TEXT_DELAY)
     time.sleep(constants.TEXT_DELAY)
-    p2.play_card(trick)
+    print("\n\n\n\n\n")
     time.sleep(constants.TEXT_DELAY)
-    p3.play_card(trick)    
-    time.sleep(constants.TEXT_DELAY)
-    p4.play_card(trick)
-    time.sleep(constants.TEXT_DELAY)
-    p5.play_card(trick)
-    time.sleep(constants.TEXT_DELAY)
-
-    print(trick.evaluate_winner().name)
+    players[:] = players[1:] + players[:1]
