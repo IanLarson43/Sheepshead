@@ -4,6 +4,7 @@ from card import Card
 class Trick:
     def __init__(self):
         self.cards = []
+        self.lead_card = None
 
     def add_card(self, card: Card):
         if self.cards == []:
