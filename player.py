@@ -24,10 +24,9 @@ class Player():
     def does_a_suit_match(self, card, cards):
         if card.is_trump and any(c.is_trump for c in cards):
             return True
-        if not card.is_trump and any(c.suit == card.suit for c in cards):
+        if not card.is_trump and any(c.suit == card.suit and not c.is_trump for c in cards):
             return True
-        return False
-            
+        return False       
     
     def play_card(self, trick: Trick):
         legal_cards = []
@@ -37,7 +36,7 @@ class Player():
                 if trick.lead_card.is_trump:
                     if card.is_trump:
                         legal_cards.append(card)
-                elif card.suit == trick.lead_card.suit:
+                elif card.suit == trick.lead_card.suit and not card.is_trump:
                     legal_cards.append(card)
         else:
             legal_cards = self.hand
