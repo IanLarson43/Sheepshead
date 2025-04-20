@@ -43,7 +43,7 @@ while True:
             print("\nWould you like to pick? (y/n)")
             pick_choosen = False
             while not pick_choosen:
-                pick_choice = input()
+                pick_choice = input().casefold()
                 if pick_choice == "y":
                     p.hand += blind
                     p.is_picker = True
