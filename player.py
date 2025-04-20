@@ -12,6 +12,8 @@ class Player():
         self.player_number = player_number
         self.hand = []
         self.points = 0
+        self.is_picker = False
+        self.is_partner = False
 
     def add_card(self, card: Card):
         self.hand.append(card)
@@ -72,3 +74,7 @@ class Player():
         self.points += trick_points
 
         return trick_points
+    
+    def bury(self, card_number):
+        self.points += constants.RANK_POINTS.get(self.hand[card_number].rank)
+        self.hand.pop(card_number)

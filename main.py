@@ -16,23 +16,70 @@ while True:
         for c in range(constants.BASE_HAND_SIZE):
             players[p].add_card(deck.draw_card())
 
-    blind.append(deck.draw_card)
-    blind.append(deck.draw_card)
+    for i in range(constants.BLIND_SIZE):
+        blind.append(deck.draw_card())
 
-    for hand in range(constants.BASE_HAND_SIZE):
+    time.sleep(constants.TEXT_DELAY)
+    for p in players:
+        if p.is_bot:
+            print(f"Player {p.player_number}'s turn to pick")
+            time.sleep(constants.TEXT_DELAY)
+            if p.bot.choose_pick(p):
+                p.hand += blind
+                p.is_picker = True
+                p.bot.bury(p)
+                print("They pick")
+                break
+            else:
+                print("They pass")
+        else:
+            print("It's your turn to pick")
+            time.sleep(constants.TEXT_DELAY)
+            print("\nYou Have:")
+            for card_number in range(len(p.hand)):
+                text = f"{card_number + 1}: {p.hand[card_number].name}"
+                print(text)
+            time.sleep(constants.TEXT_DELAY)
+            print("\nWould you like to pick? (y/n)")
+            pick_choosen = False
+            while not pick_choosen:
+                pick_choice = input()
+                if pick_choice == "y":
+                    p.hand += blind
+                    p.is_picker = True
+                    print("You pick")
+                    for i in range(constants.BLIND_SIZE):
+                        time.sleep(constants.TEXT_DELAY)
+                        print("\nYou Have:")
+                        for card_number in range(len(p.hand)):
+                            text = f"{card_number + 1}: {p.hand[card_number].name}"
+                            print(text)
+                        time.sleep(constants.TEXT_DELAY)
+                        print("\nWhat card would you like to bury?")
+                        card_buried = False
+                        while not card_buried:
+                            try:
+                                p.bury(int(input()) - 1)
+                                card_buried = True
+                            except (ValueError, IndexError):
+                                print("Invalid Selection. Please try again")
+                    pick_choosen = True
+                elif pick_choice == "n":
+                    print("You pass")
+                    pick_choosen = True
+                else:
+                    print("Invalid Selection. Please try again")
+            if pick_choice == "y":
+                break
+
+    for h in range(constants.BASE_HAND_SIZE):
         trick = Trick()
 
         time.sleep(constants.TEXT_DELAY)
-        round_players[0].play_card(trick)
-        time.sleep(constants.TEXT_DELAY)
-        round_players[1].play_card(trick)
-        time.sleep(constants.TEXT_DELAY)
-        round_players[2].play_card(trick)    
-        time.sleep(constants.TEXT_DELAY)
-        round_players[3].play_card(trick)
-        time.sleep(constants.TEXT_DELAY)
-        round_players[4].play_card(trick)
-        time.sleep(constants.TEXT_DELAY)
+
+        for p in range(constants.PLAYER_COUNT):
+            round_players[p].play_card(trick)
+            time.sleep(constants.TEXT_DELAY)
 
         winning_card = trick.evaluate_winner()
         winner_index = trick.cards.index(winning_card)
