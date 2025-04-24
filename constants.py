@@ -44,3 +44,4 @@ CARD_STRENGTH = {
 
 RANKS = ["7", "8", "9", "King", "10", "Ace", "Jack", "Queen"]
 SUITS = ["Hearts", "Diamonds", "Clubs", "Spades"]
+FAIL_SUITS = ["Clubs", "Spades", "Hearts"]

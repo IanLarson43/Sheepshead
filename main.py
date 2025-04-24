@@ -1,9 +1,11 @@
 import time
 
 import constants
+import utils
 from deck import Deck
 from player import Player
 from trick import Trick
+from card import Card
 
 players = [Player(1, False)] + ([Player(_ + 2, True) for _ in range(constants.PLAYER_COUNT - 1)])
 
@@ -48,18 +50,47 @@ while True:
                     p.hand += blind
                     p.is_picker = True
                     print("You pick")
+                    time.sleep(constants.TEXT_DELAY)
+                    print("\nYou Have:")
+                    for card_number in range(len(p.hand)):
+                        text = f"{card_number + 1}: {p.hand[card_number].name}"
+                        print(text)
+                    print("\n")
+                    time.sleep(constants.TEXT_DELAY)
+                    print("What card would you like to call?")
+                    time.sleep(constants.TEXT_DELAY)
+                    callable_cards = []
+                    for suit in constants.FAIL_SUITS:
+                        ace = Card("Ace", suit)
+                        if utils.suit_matches(ace, p.hand) and not any(ace == c for c in p.hand):
+                            callable_cards.append(ace)
+                    for card_number in range(len(callable_cards)):
+                        print(f"{card_number + 1}: {callable_cards[card_number].name}")
+                    card_called = False
+                    while not card_called:
+                        try:
+                            called_card = callable_cards[int(input()) - 1]
+                            card_called = True
+                        except (ValueError, IndexError):
+                            print("Invalid Selection. Please try again")
+                    called_suit_cards = [card for card in p.hand if card.suit == called_card.suit]
+
                     for i in range(constants.BLIND_SIZE):
                         time.sleep(constants.TEXT_DELAY)
                         print("\nYou Have:")
                         for card_number in range(len(p.hand)):
                             text = f"{card_number + 1}: {p.hand[card_number].name}"
-                            print(text)
+                            is_illegal_bury = utils.only_and_matching_card(p.hand[card_number], called_suit_cards)
+                            print(utils.strikethrough(text) if is_illegal_bury else text)
                         time.sleep(constants.TEXT_DELAY)
                         print("\nWhat card would you like to bury?")
                         card_buried = False
                         while not card_buried:
                             try:
-                                p.bury(int(input()) - 1)
+                                bury_card_number = int(input()) - 1
+                                if utils.only_and_matching_card(p.hand[bury_card_number], called_suit_cards):
+                                    raise IndexError # Is this really a good way to do this?
+                                p.bury(bury_card_number)
                                 card_buried = True
                             except (ValueError, IndexError):
                                 print("Invalid Selection. Please try again")

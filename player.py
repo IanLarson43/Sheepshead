@@ -21,19 +21,12 @@ class Player():
 
     def remove_card(self, card: Card):
         self.hand.remove(card)
-        return card
-    
-    def does_a_suit_match(self, card, cards):
-        if card.is_trump and any(c.is_trump for c in cards):
-            return True
-        if not card.is_trump and any(c.suit == card.suit and not c.is_trump for c in cards):
-            return True
-        return False       
+        return card     
     
     def play_card(self, trick: Trick):
         legal_cards = []
 
-        if trick.lead_card is not None and self.does_a_suit_match(trick.lead_card, self.hand):
+        if trick.lead_card is not None and utils.suit_matches(trick.lead_card, self.hand):
             for card in self.hand:
                 if trick.lead_card.is_trump:
                     if card.is_trump:
